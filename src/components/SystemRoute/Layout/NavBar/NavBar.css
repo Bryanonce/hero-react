@@ -1,0 +1,14 @@
+#log-out{
+    border: none;
+    box-shadow: none;
+    margin-left: 10px;
+}
+
+.navbar{
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.input-search{
+    text-transform: lowercase;
+}

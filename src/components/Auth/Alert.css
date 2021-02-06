@@ -1,0 +1,11 @@
+#alerta{
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+#alerta>p{
+    padding: 0;
+    margin: 0;
+}

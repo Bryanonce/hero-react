@@ -1,8 +1,9 @@
-import React,{useReducer} from 'react';
+import React,{useEffect, useReducer} from 'react';
 //import context
 import {AuthContext} from './AuthContext';
 //import custom hook
 import {useForm} from '../../hooks/useForm';
+import {useStorage} from '../../hooks/useStorage';
 //import reducer
 import {AuthReducer} from './AuthReducer';
 import {
@@ -17,12 +18,37 @@ const initialValue = {
     error: false,
     user: {},
     login: false
-}
+};
 
-export const AuthState = (props)=>{
+const method = "login";
+
+export const AuthState = React.memo((props)=>{
+    const [value,setValue] = useStorage({
+        initialValue,
+        method
+    });
+    console.log(value);
     const [form,handleInputChange] = useForm();
     const [userSigIn,dispatch] = useReducer(AuthReducer,initialValue);
     const {error,user,login} = userSigIn;
+
+    useEffect(()=>{
+        if(value){
+            if(value.login){
+                dispatch({
+                    type: AUTH_LOGIN,
+                    payload: {
+                        user: {
+                            nombre: value.name,
+                            email: value.email
+                        },
+                        login: true
+                    }
+                })
+            }
+        }
+    },[value])
+
     const onSubmitForm = (e,history)=>{
         e.preventDefault();
         const auth = VerifyAuth(form);
@@ -38,12 +64,22 @@ export const AuthState = (props)=>{
                 login: true
             }
         })
+        setValue({
+            nombre:   auth.user[0].nombre,
+            email: auth.user[0].email,
+            login: true
+        });
         return history.push('/home')
     }
     const onLogOut = ()=>{
         dispatch({
             type: AUTH_LOGOUT
         })
+        setValue({
+            nombre: '',
+            email: '',
+            login: false
+        });
     }
 
     return (
@@ -61,4 +97,4 @@ export const AuthState = (props)=>{
             {props.children}
         </AuthContext.Provider>
     );
-}
+})
